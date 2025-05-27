@@ -1,0 +1,73 @@
+{
+	"name": "Metrics",
+	"project": "rust-syntheticdata-generator",
+	"working_dir": "/home/lzuccarelli/Projects/",
+	"description": "A simple metrics synthetic data generator",
+	"log_level": "trace",
+	"params": [
+		{
+			"name": "cpu",
+			"base_type": "f32",
+			"min_value": "0.1",
+			"max_value": "99.9",
+			"init": "0.0",
+			"function": [
+				"match value {",
+        "    x if x < 20.0 => return cmp::max(-1,status),",
+        "    x if x < 65.0 => return cmp::max(0,status),",
+        "    _ => return 1,",
+        "}"
+			],
+			"output": false
+		},{
+			"name": "memory",
+			"base_type": "f32",
+			"min_value": "0.1",
+			"max_value": "99.9",
+			"init": "0.0",
+			"function": [
+				"match value {",
+        "    x if x < 20.0 => return cmp::max(-1,status),",
+        "    x if x < 65.0 => return cmp::max(0,status),",
+        "    _ => return 1,",
+        "}"
+      ],
+			"output": false
+
+		},{
+			"name": "disk",
+			"base_type": "f32",
+			"min_value": "0.1",
+			"max_value": "99.9",
+			"init": "0.0",
+			"function": [
+				"match value {",
+        "    x if x < 20.0 => return cmp::max(-1,status),",
+        "    x if x < 65.0 => return cmp::max(0,status),",
+        "    _ => return 1,",
+        "}"
+      ],
+			"output": false
+		},{
+			"name": "qtime",
+			"base_type": "f32",
+			"min_value": "0.1",
+			"max_value": "99.9",
+			"init": "0.0",
+			"function": [
+				"match value {",
+        "    x if x < 20.0 => return cmp::max(-1,status),",
+        "    x if x < 65.0 => return cmp::max(0,status),",
+        "    _ => return 1,",
+        "}"
+      ],
+			"output": false
+		},{
+			"name": "status",
+			"base_type": "i8",
+			"init": "-1",
+			"output": true
+		}
+	]
+}
+
