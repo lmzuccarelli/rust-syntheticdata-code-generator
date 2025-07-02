@@ -6,7 +6,7 @@
 	"log_level": "trace",
 	"params": [
 		{
-			"name": "processor",
+			"name": "processors",
 			"base_type": "f32",
 			"min_value": "0.0",
 			"max_value": "4.0",
