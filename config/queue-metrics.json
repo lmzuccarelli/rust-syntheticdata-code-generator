@@ -1,0 +1,77 @@
+{
+	"name": "QueueMetrics",
+	"project": "rust-syntheticdata-generator",
+	"working_dir": "/home/lzuccarelli/Projects/",
+	"description": "A simple queue metrics synthetic data generator",
+	"log_level": "trace",
+	"params": [
+		{
+			"name": "processor",
+			"base_type": "f32",
+			"min_value": "0.0",
+			"max_value": "4.0",
+			"limits_array": "vec![vec![0.0,2.0],vec![2.0,3.0],vec![3.0,4.0]]",
+			"init": "1.0",
+			"function": [
+				"match value {",
+        "    x if x < 2.0 => return cmp::max(0,status),",
+        "    x if x < 3.0 => return cmp::max(0,status),",
+        "    _ => return 0,",
+        "}"
+			],
+			"output": false
+		},{
+			"name": "avg_batch_size",
+			"base_type": "f32",
+			"min_value": "0.0",
+			"max_value": "1000.0",
+			"limits_array": "vec![vec![0.0,650.0],vec![650.0,850.0],vec![850.0,1000.0]]",
+			"init": "250.0",
+			"function": [
+				"match value {",
+        "    x if x < 650.0 => return cmp::max(0,status),",
+        "    x if x < 850.0 => return cmp::max(1,status),",
+        "    _ => return 2,",
+        "}"
+      ],
+			"output": false
+
+		},{
+			"name": "queue_length",
+			"base_type": "f32",
+			"min_value": "1.0",
+			"max_value": "10.0",
+			"limits_array": "vec![vec![0.0,3.0],vec![3.0,5.0],vec![5.0,10.0]]",
+			"init": "1.0",
+			"function": [
+				"match value {",
+        "    x if x < 3.0 => return cmp::max(0,status),",
+        "    x if x < 5.0 => return cmp::max(1,status),",
+        "    _ => return 2,",
+        "}"
+      ],
+			"output": false
+		},{
+			"name": "processing_time",
+			"base_type": "f32",
+			"min_value": "1.0",
+			"max_value": "100.0",
+			"limits_array": "vec![vec![0.0,10.0],vec![10.0,30.0],vec![30.0,100.0]]",
+			"init": "10.0",
+			"function": [
+				"match value {",
+        "    x if x < 10.0 => return cmp::max(0,status),",
+        "    x if x < 30.0 => return cmp::max(1,status),",
+        "    _ => return 2,",
+        "}"
+      ],
+			"output": false
+		},{
+			"name": "status",
+			"base_type": "i8",
+			"init": "0",
+			"output": true
+		}
+	]
+}
+

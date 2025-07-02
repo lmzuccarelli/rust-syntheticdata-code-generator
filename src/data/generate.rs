@@ -9,6 +9,7 @@ pub struct Parameter {
     pub min_value: Option<String>,
     pub max_value: Option<String>,
     pub function: Option<Vec<String>>,
+    pub limits_array: Option<String>,
     pub output: bool,
     pub init: String,
 }
@@ -74,38 +75,54 @@ impl GeneratorInterface for ImplGeneratorInterface {
             header.join(",").to_string()
         ));
 
-        generate.push_str("\t\tfor _n in 0..self.count {\n");
+        for item in data.params.iter() {
+            if item.limits_array.is_none() && !item.output {
+                return Err(GenerateError::new(
+                    "[create] building limits array all outputs must have limits_field set",
+                ));
+            }
+            if item.limits_array.is_some() && !item.output {
+                generate.push_str(&format!(
+                    "\t\tlet {}_range: Vec<Vec<f32>> = {};\n",
+                    item.name,
+                    item.limits_array.as_ref().unwrap()
+                ))
+            }
+        }
+
+        // this is specific to a status with 3 values
+        // TODO: add status range
+        generate.push_str("\t\tfor x in 0..3 {\n");
+        generate.push_str("\t\t\tfor _n in 0..self.count {\n");
         // build schema and body
         for item in data.params.iter() {
             if !item.output {
                 generate.push_str(&format!(
-                    "\t\t\tlet {} = rng.random_range({}..{});\n",
-                    item.name,
-                    item.min_value.as_ref().unwrap(),
-                    item.max_value.as_ref().unwrap()
+                    "\t\t\t\tlet {} = rng.random_range({}_range[x][0]..{}_range[x][1]);\n",
+                    item.name, item.name, item.name,
                 ));
                 generate.push_str(&format!(
-                    "\t\t\tstatus = rules_engine(\"{}\",status,{});\n",
+                    "\t\t\t\tstatus = rules_engine(\"{}\",status,{});\n",
                     item.name, item.name
+                ));
+                generate.push_str(&format!(
+                    "\t\t\t\tdata_string.push_str(&format!(\"{},\",{}));\n",
+                    "{}", item.name
                 ));
                 rules_engine.push_str(&format!("\t\t\"{}\" => {}\n", item.name, "{"));
                 for line in item.function.as_ref().unwrap().iter() {
                     rules_engine.push_str(&format!("\t\t\t{}\n", line));
                 }
                 rules_engine.push_str("\t\t},\n");
-                generate.push_str(&format!(
-                    "\t\t\tdata_string.push_str(&format!(\"{},\",{}));\n",
-                    "{}", item.name
-                ));
             } else {
                 generate
-                    .push_str("\t\t\tdata_string.push_str(&format!(\"{}{}\",status,\"\\n\"));\n");
+                    .push_str("\t\t\t\tdata_string.push_str(&format!(\"{}{}\",status,\"\\n\"));\n");
 
-                generate.push_str(&format!("\t\t\tstatus = {};\n", item.init));
+                generate.push_str(&format!("\t\t\t\tstatus = {};\n", item.init));
             }
         }
         rules_engine.push_str("\t\t&_ => return 1,\n");
-        generate.push_str("\t\t}\n");
+        generate.push_str("\t\t\t}\n\t\t}\n");
         let file = "\t\tfs::write(format!(\"results/{}-{}.csv\",self.name,self.count),data_string).expect(\"should write to file\");\n";
         generate.push_str(&file);
         generate.push_str("\t}\n");

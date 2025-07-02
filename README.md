@@ -38,7 +38,7 @@ Update the main.rs accoringly
 build the binary with the newly generated library
 
 ```
-cargo build --release --fetaures = "use-libary"
+cargo build --release --features "use-libary"
 ```
 
 Finally generate the synthetic data
@@ -47,6 +47,26 @@ Finally generate the synthetic data
 ./target/release/rust-syntheticdata-code-generator --config config/metrics.json execute --name metrics --count 1000
 ```
 
+## Notes
 
+For the current status (output) settings we have the following values
+
+- 0 => scale down 
+- 1 => nop
+- 2 => scale up
+
+This is specific for both metrics and queuemetrics. 
+
+The next step is to make this generic and add a range
+
+The limits_array field should have the max length of the status range, also all output fields must have a limits_array field set.
+
+As an example if the status has 0,1,2 values (length 3) then the limit_array should look like 
+
+```
+"limit_array": "vec![vec![value,value],vec![value,value],vec![value,value]]"
+
+                     ^ - status=0      ^ status=1        ^ status=2 
+```
 
 

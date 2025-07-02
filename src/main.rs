@@ -45,7 +45,7 @@ fn main() -> Result<(), GenerateError> {
             fs::create_dir_all("results").expect("should create results directory");
             // change this section below to include the specific library for generation
             #[cfg(feature = "use-library")]
-            let mut sd = sd_gen_metrics::Metrics::new(name.clone(), records);
+            let mut sd = sd_gen_queuemetrics::QueueMetrics::new(name.clone(), records);
             #[cfg(feature = "use-library")]
             sd.generate();
             log::info!("artifacts created in results folder");
