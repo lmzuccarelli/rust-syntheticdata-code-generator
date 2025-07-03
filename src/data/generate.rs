@@ -111,7 +111,35 @@ impl GeneratorInterface for ImplGeneratorInterface {
                 ));
                 rules_engine.push_str(&format!("\t\t\"{}\" => {}\n", item.name, "{"));
                 for line in item.function.as_ref().unwrap().iter() {
-                    rules_engine.push_str(&format!("\t\t\t{}\n", line));
+                    if line.contains("limits_array") {
+                        let limits_array = item.limits_array.as_ref().unwrap();
+                        let vecs = limits_array
+                            .split("vec![")
+                            .map(|x| x.replace("]", ""))
+                            .filter(|x| x.len() > 0)
+                            .collect::<Vec<String>>();
+                        let mut vec_limits: Vec<Vec<&str>> = Vec::new();
+                        // notice reverse order
+                        for vec in vecs.iter().rev() {
+                            let (a, b) = vec.split_once(",").unwrap();
+                            let v: Vec<&str> = vec![a, b];
+                            vec_limits.insert(0, v.clone());
+                        }
+                        let max_value = match line {
+                            x if x.contains("limits_array[0][1]") => line
+                                .replace("limits_array[0][1]", &vec_limits[0][1].replace(",", "")),
+                            x if x.contains("limits_array[1][1]") => line
+                                .replace("limits_array[1][1]", &vec_limits[1][1].replace(",", "")),
+                            x if x.contains("limits_array[2][1]") => line
+                                .replace("limits_array[2][1]", &vec_limits[2][1].replace(",", "")),
+                            x if x.contains("limits_array[3][1]") => line
+                                .replace("limits_array[3][1]", &vec_limits[3][1].replace(",", "")),
+                            &_ => line.to_string(),
+                        };
+                        rules_engine.push_str(&format!("\t\t\t{}\n", max_value));
+                    } else {
+                        rules_engine.push_str(&format!("\t\t\t{}\n", line));
+                    }
                 }
                 rules_engine.push_str("\t\t},\n");
             } else {

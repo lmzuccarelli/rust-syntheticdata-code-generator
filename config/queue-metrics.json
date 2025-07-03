@@ -14,8 +14,8 @@
 			"init": "1.0",
 			"function": [
 				"match value {",
-        "    x if x < 2.0 => return cmp::max(0,status),",
-        "    x if x < 3.0 => return cmp::max(0,status),",
+        "    x if x < limits_array[0][1] => return cmp::max(0,status),",
+        "    x if x < limits_array[1][1] => return cmp::max(0,status),",
         "    _ => return 0,",
         "}"
 			],
@@ -29,8 +29,8 @@
 			"init": "250.0",
 			"function": [
 				"match value {",
-        "    x if x < 650.0 => return cmp::max(0,status),",
-        "    x if x < 850.0 => return cmp::max(1,status),",
+        "    x if x < limits_array[0][1] => return cmp::max(0,status),",
+        "    x if x < limits_array[1][1] => return cmp::max(1,status),",
         "    _ => return 2,",
         "}"
       ],
@@ -45,8 +45,8 @@
 			"init": "1.0",
 			"function": [
 				"match value {",
-        "    x if x < 3.0 => return cmp::max(0,status),",
-        "    x if x < 5.0 => return cmp::max(1,status),",
+        "    x if x < limits_array[0][1] => return cmp::max(0,status),",
+        "    x if x < limits_array[1][1] => return cmp::max(1,status),",
         "    _ => return 2,",
         "}"
       ],
@@ -60,8 +60,8 @@
 			"init": "10.0",
 			"function": [
 				"match value {",
-        "    x if x < 10.0 => return cmp::max(0,status),",
-        "    x if x < 30.0 => return cmp::max(1,status),",
+        "    x if x < limits_array[0][1] => return cmp::max(0,status),",
+        "    x if x < limits_array[1][1] => return cmp::max(1,status),",
         "    _ => return 2,",
         "}"
       ],
