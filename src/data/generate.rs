@@ -61,6 +61,8 @@ impl GeneratorInterface for ImplGeneratorInterface {
         let mut generate = String::from("\tpub fn generate(&mut self) {\n");
         let mut rules_engine =
             String::from("\npub fn rules_engine(key: &str,status: i8,value: f32) -> i8 {\n");
+
+        rules_engine.push_str("\tif status == 2 { return 2; }\n");
         rules_engine.push_str("\tmatch key {\n");
         generate.push_str("\t\tlet mut rng = rand::rng();\n");
         generate.push_str(&format!("\t\tlet mut status: i8 = -1;\n"));
@@ -92,11 +94,13 @@ impl GeneratorInterface for ImplGeneratorInterface {
 
         // this is specific to a status with 3 values
         // TODO: add status range
-        generate.push_str("\t\tfor x in 0..3 {\n");
+        //generate.push_str("\t\tfor x in 0..3 {\n");
+        generate.push_str("\t\tlet mut x:usize;\n");
         generate.push_str("\t\t\tfor _n in 0..self.count {\n");
         // build schema and body
         for item in data.params.iter() {
             if !item.output {
+                generate.push_str("\t\t\t\tx = rng.random_range(0..3);\n");
                 generate.push_str(&format!(
                     "\t\t\t\tlet {} = rng.random_range({}_range[x][0]..{}_range[x][1]);\n",
                     item.name, item.name, item.name,
@@ -149,8 +153,9 @@ impl GeneratorInterface for ImplGeneratorInterface {
                 generate.push_str(&format!("\t\t\t\tstatus = {};\n", item.init));
             }
         }
-        rules_engine.push_str("\t\t&_ => return 1,\n");
-        generate.push_str("\t\t\t}\n\t\t}\n");
+        rules_engine.push_str("\t\t&_ => return status,\n");
+        //generate.push_str("\t\t\t}\n\t\t}\n");
+        generate.push_str("\n\t\t}\n");
         let file = "\t\tfs::write(format!(\"results/{}-{}.csv\",self.name,self.count),data_string).expect(\"should write to file\");\n";
         generate.push_str(&file);
         generate.push_str("\t}\n");

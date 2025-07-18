@@ -38,7 +38,7 @@ Update the main.rs accoringly
 build the binary with the newly generated library
 
 ```
-cargo build --release --features "use-libary"
+cargo build --release --features "use-library"
 ```
 
 Finally generate the synthetic data
